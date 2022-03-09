@@ -41,12 +41,12 @@ from libqtile import hook
 
 def popup_test(qtile):
     send_notification("popup_test_1", "this is test #1")
-
+def runc(qtile):
+		sp.run("maim -s -o -D -u | xclip -selection clipboard -t image/png", shell=True, check=True)
 
 @hook.subscribe.startup_once
 def autostart():
     sp.Popen(["blueman-applet"])
-
 
 mod = "mod4"
 alt = "mod1"
@@ -67,6 +67,7 @@ keys = [
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
     Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
+
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
     Key(
@@ -80,6 +81,7 @@ keys = [
     ),
     Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
     Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
+
     # Grow windows. If current window is on the edge of screen and direction
     # will be to screen edge - window would shrink.
     Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
@@ -101,24 +103,37 @@ keys = [
         desc="Toggle between split and unsplit sides of stack",
     ),
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
+
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
+
+	#Key([mod, "control"], "r",lazy.reload_config(), desc="Reload the config"),
+	Key([mod, "control"], "r",lazy.restart(), desc="Restart Qtile"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+
     # volume
     Key([], "XF86AudioLowerVolume", lazy.spawn("volume-change -5")),
     Key([], "XF86AudioRaiseVolume", lazy.spawn("volume-change +5")),
     Key([], "XF86AudioMute", lazy.spawn("amixer set Master toggle")),
+
+	#rofi
+    Key([mod], "s", lazy.spawn("rofi -show ssh -no-parse-known-hosts -disable-history")),
+	Key([mod], "o", lazy.spawn("powermen")),
+	
+	#screenshots
+	Key(["shift", mod], "s", lazy.function(runc)),
+	#Key(["shift", mod], "a", runc("maim -o -u | xclip -selection clipboard -t image/png",True)),
+
 ]
 
 groups = [
-    Group("DEV", spawn=terminal, layout="bsp"),
-    Group("UNI", spawn="nautilus Documents/pr/uni"),
+    Group("SYS", spawn=terminal, layout="bsp"),
     Group("NET", spawn="google-chrome-stable"),
-    Group("SYS"),
+    Group("UNI", spawn="nautilus Documents/pr/uni"),
     Group("DOC"),
+    Group("GDV"),
     Group("VRM",spawn="virt-manager",matches=[Match(wm_class=["virt-manager"])],layout="max"),
     Group("CHT", spawn="discord", matches=[Match(wm_class=["discord"])]),
     Group("MUS"),
@@ -127,17 +142,6 @@ groups = [
 
 
 groups2 = [Group(i) for i in "123456789"]
-groupdict = {
-		"DEV":0,
-		"UNI":1,
-		"NET":2,
-		"SYS":3,
-		"DOC":4,
-		"VRM":5,
-		"CHT":6,
-		"MUS":7,
-		"VID":8
-		}
 
 for ind, i in enumerate(groups2):
     keys.extend(
@@ -169,19 +173,33 @@ for ind, i in enumerate(groups2):
 
 keys.extend([
     # go to surrounding groups
-	Key([alt, "shift"],"h",lazy.screen.prev_group()),
-    Key([alt, "shift"],"l",lazy.screen.next_group())
+	Key([alt],"h",lazy.screen.prev_group()),
+    Key([alt],"l",lazy.screen.next_group())
 	])
 	
 
 
 layouts = [
-    layout.Columns(border_focus_stack=colors[0], border_width=4),
-    layout.Max(border_focus_stack=colors[0], border_width=4),
-    # Try more layouts by unleashing below layouts.
-    layout.Stack(num_stacks=2, border_focus_stack=colors[0], border_width=4),
-    layout.Bsp(border_focus_stack=colors[0], border_width=4),
-	layout.TreeTab(border_focus_stack=colors[0], border_width=4),
+    layout.Columns(
+			border_focus_stack=colors[0],
+			border_width=4,
+			margin = 6),
+    layout.Max(
+			border_focus_stack=colors[0],
+			border_width=4),
+    layout.Stack(
+			num_stacks=2,
+			border_focus_stack=colors[0],
+			border_width=4,
+			margin = 6),
+    layout.Bsp(
+			border_focus_stack=colors[0],
+			border_width=4,
+			margin = 6),
+	layout.TreeTab(
+			border_focus_stack=colors[0],
+			border_width=4,
+			margin = 6),
     # layout.Matrix(),
     # layout.MonadTall(),
     # layout.MonadWide(),
@@ -256,7 +274,7 @@ screens = [
                 ),
                 widget.TextBox(
                     "",
-                    width=29,
+                    width=23,
                     padding=0,
                     fontsize=23,
                     foreground=colors[5],
