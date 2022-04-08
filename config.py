@@ -41,8 +41,8 @@ from libqtile import hook
 
 def popup_test(qtile):
     send_notification("popup_test_1", "this is test #1")
-def runc(qtile):
-		sp.run("maim -s -o -D -u | xclip -selection clipboard -t image/png", shell=True, check=True)
+def runc(tile,function):
+		sp.run(functions[function], shell=True, check=True)
 
 @hook.subscribe.startup_once
 def autostart():
@@ -58,6 +58,12 @@ colors = [
     "#e6b450",  # yellow
     "#565b66",  # grey
 ]
+functions = [
+	"maim -s -o -D -u | xclip -selection clipboard -t image/png",
+	"maim -o -u | xclip -selection clipboard -t image/png"
+	]
+
+
 terminal = guess_terminal()
 
 keys = [
@@ -117,14 +123,18 @@ keys = [
     Key([], "XF86AudioLowerVolume", lazy.spawn("volume-change -5")),
     Key([], "XF86AudioRaiseVolume", lazy.spawn("volume-change +5")),
     Key([], "XF86AudioMute", lazy.spawn("amixer set Master toggle")),
+	Key([], "XF86AudioPlay", lazy.spawn("media p")),
+	Key([], "XF86AudioPause", lazy.spawn("media p")),
+	Key([], "XF86AudioNext", lazy.spawn("media n")),
+	Key([], "XF86AudioPrev", lazy.spawn("media b")),
 
 	#rofi
     Key([mod], "s", lazy.spawn("rofi -show ssh -no-parse-known-hosts -disable-history")),
 	Key([mod], "o", lazy.spawn("powermen")),
 	
 	#screenshots
-	Key(["shift", mod], "s", lazy.function(runc)),
-	#Key(["shift", mod], "a", runc("maim -o -u | xclip -selection clipboard -t image/png",True)),
+	Key(["shift", mod], "s", lazy.function(runc,0)),
+	Key(["shift", mod], "a", lazy.function(runc,1)),
 
 ]
 
@@ -133,9 +143,9 @@ groups = [
     Group("NET", spawn="google-chrome-stable"),
     Group("UNI", spawn="nautilus Documents/pr/uni"),
     Group("DOC"),
-    Group("GDV"),
+    Group("GDV",spawn="unityhub",matches=[Match(wm_class=["unityhub"])]),
     Group("VRM",spawn="virt-manager",matches=[Match(wm_class=["virt-manager"])],layout="max"),
-    Group("CHT", spawn="discord", matches=[Match(wm_class=["discord"])]),
+    Group("CHT", spawn="discord", matches=[Match(wm_class=["discord","whatsapp"])]),
     Group("MUS"),
     Group("VID"),
 ]
@@ -281,7 +291,7 @@ screens = [
                     background=colors[4],
                 ),
                 widget.Memory(
-                    format="Memory: {MemPercent}%",
+                    format="Ram: {MemPercent}%",
                     background=colors[4],
                     foreground=colors[3],
                 ),
@@ -337,7 +347,9 @@ screens = [
                     background=colors[4],
                 ),
                 widget.CapsNumLockIndicator(
-                    fmt="{}", background=colors[4], foreground=colors[3]
+                    fmt="{}",
+					background=colors[4],
+					foreground=colors[3]
                 ),
                 widget.TextBox(
                     "",
