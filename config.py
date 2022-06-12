@@ -48,6 +48,8 @@ def runc(tile,function):
 def autostart():
     sp.Popen(["blueman-applet"])
 
+def parse(text):
+	return text.replace("\n",":")	
 mod = "mod4"
 alt = "mod1"
 colors = [
@@ -143,15 +145,17 @@ groups = [
     Group("NET", spawn="google-chrome-stable"),
     Group("UNI", spawn="nautilus Documents/pr/uni"),
     Group("DOC"),
-    Group("GDV",spawn="unityhub",matches=[Match(wm_class=["unityhub"])]),
+    Group("GDV",spawn="unityhub",matches=[Match(wm_class=["unityhub","Unity"])],layout="treetab"),
     Group("VRM",spawn="virt-manager",matches=[Match(wm_class=["virt-manager"])],layout="max"),
     Group("CHT", spawn="discord", matches=[Match(wm_class=["discord","whatsapp"])]),
-    Group("MUS"),
+    Group("MUS",spawn = "google-chrome-stable youtube.com"),
     Group("VID"),
+	Group("ANI",spawn = "google-chrome-stable zoro.to",layout = "max"),
 ]
 
 
-groups2 = [Group(i) for i in "123456789"]
+
+groups2 = [Group(i) for i in "1234567890"]
 
 for ind, i in enumerate(groups2):
     keys.extend(
@@ -246,6 +250,7 @@ screens = [
                     urgent_text="e36841",
                     highlight_color=colors[0],
                     highlight_method="line",
+					rounded = True,
                 ),
                 widget.Sep(foreground=colors[3]),
                 widget.CurrentLayout(
@@ -257,7 +262,8 @@ screens = [
                     ignore_dups_history=False,
                 ),
                 widget.Sep(foreground=colors[3]),
-                widget.WindowName(foreground=colors[3]),
+				#widget.Cmus(),
+				widget.WindowName(foreground=colors[3]),
                 # widget.Chord(
                 #    chords_colors={
                 #        'launch': ("#ff0000", "#ffffff"),
@@ -269,6 +275,7 @@ screens = [
                     format="%A, %b %d %I:%M %p",
                     foreground=colors[3],
                 ),
+
             ],
             24,
             background=colors[5],
@@ -283,10 +290,10 @@ screens = [
                     foreground=colors[3],
                 ),
                 widget.TextBox(
-                    "",
-                    width=23,
+                    '',
+					width=30,
+                    fontsize=22,
                     padding=0,
-                    fontsize=23,
                     foreground=colors[5],
                     background=colors[4],
                 ),
@@ -296,10 +303,10 @@ screens = [
                     foreground=colors[3],
                 ),
                 widget.TextBox(
-                    "",
-                    width=23,
+                    "",
+					width=30,
+                    fontsize=22,
                     padding=0,
-                    fontsize=23,
                     foreground=colors[4],
                     background=colors[5],
                 ),
@@ -309,10 +316,10 @@ screens = [
                     foreground=colors[3],
                 ),
                 widget.TextBox(
-                    "",
-                    width=23,
+                    "",
+					width=30,
+                    fontsize=22,
                     padding=0,
-                    fontsize=23,
                     foreground=colors[5],
                     background=colors[4],
                 ),
@@ -325,10 +332,10 @@ screens = [
                     low_percentage=0.2,
                 ),
                 widget.TextBox(
-                    "",
-                    width=23,
+                    "",
+					width=30,
+                    fontsize=22,
                     padding=0,
-                    fontsize=23,
                     foreground=colors[4],
                     background=colors[5],
                 ),
@@ -339,10 +346,10 @@ screens = [
                     visible_on_warn=False,
                 ),
                 widget.TextBox(
-                    "",
-                    width=23,
+                    "",
+					width=30,
+                    fontsize=22,
                     padding=0,
-                    fontsize=23,
                     foreground=colors[5],
                     background=colors[4],
                 ),
@@ -352,19 +359,35 @@ screens = [
 					foreground=colors[3]
                 ),
                 widget.TextBox(
-                    "",
-                    width=23,
+                    "",
+					width=30,
+                    fontsize=22,
                     padding=0,
-                    fontsize=23,
                     foreground=colors[4],
                     background=colors[5],
                 ),
-                widget.Notify(),
+                widget.Notify(
+                    background=colors[5],
+					foreground=colors[3],
+					#parse_text = parse,
+					fmt = {},
+				),
             ],
             24,
-            background=colors[5],
+			background=colors[5],
         ),
     ),
+
+  Screen(
+  	top=bar.Bar(
+  	    [
+  	        widget.GroupBox(),
+  	        widget.WindowName(),
+  	        widget.Clock()
+  	    ],
+  	    30,
+  	),
+  ),
 ]
 
 # Drag floating layouts.
