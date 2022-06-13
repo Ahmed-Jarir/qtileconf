@@ -38,20 +38,27 @@ from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile import hook
 
+##functions##
 
-def popup_test(qtile):
-    send_notification("popup_test_1", "this is test #1")
+#def popup_test(qtile):
+#    send_notification("popup_test_1", "this is test #1")
 def runc(tile,function):
 		sp.run(functions[function], shell=True, check=True)
-
+def parse(text):
+	return text.replace("\n",":")	
 @hook.subscribe.startup_once
 def autostart():
     sp.Popen(["blueman-applet"])
 
-def parse(text):
-	return text.replace("\n",":")	
+##end functions##
+
+
+
+##modifiers##
 mod = "mod4"
 alt = "mod1"
+
+##useful lists##
 colors = [
     ["#0400ff", "#2b4bff"],
     ["#d4d5d9", "#a9a9a9"],
@@ -63,11 +70,17 @@ colors = [
 functions = [
 	"maim -s -o -D -u | xclip -selection clipboard -t image/png",
 	"maim -o -u | xclip -selection clipboard -t image/png"
-	]
+]
+##end useful lists##
 
 
 terminal = guess_terminal()
 
+
+
+
+
+##keys##
 keys = [
     # Switch between windows
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
@@ -93,9 +106,7 @@ keys = [
     # Grow windows. If current window is on the edge of screen and direction
     # will be to screen edge - window would shrink.
     Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
-    Key(
-        [mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"
-    ),
+    Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
     Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
@@ -139,7 +150,9 @@ keys = [
 	Key(["shift", mod], "a", lazy.function(runc,1)),
 
 ]
+##end keys##	
 
+##Groups##
 groups = [
     Group("SYS", spawn=terminal, layout="bsp"),
     Group("NET", spawn="google-chrome-stable"),
@@ -152,9 +165,10 @@ groups = [
     Group("VID"),
 	Group("ANI",spawn = "google-chrome-stable zoro.to",layout = "max"),
 ]
+##end keys##	
 
 
-
+##group keys##
 groups2 = [Group(i) for i in "1234567890"]
 
 for ind, i in enumerate(groups2):
@@ -190,9 +204,9 @@ keys.extend([
 	Key([alt],"h",lazy.screen.prev_group()),
     Key([alt],"l",lazy.screen.next_group())
 	])
-	
+##end group keys##
 
-
+##layouts##
 layouts = [
     layout.Columns(
 			border_focus_stack=colors[0],
@@ -222,17 +236,8 @@ layouts = [
     # layout.VerticalTile(),
     # layout.Zoomy(),
 ]
-
-widget_defaults = dict(
-    font="FiraCode Nerd Font Bold",
-    fontsize=12,
-    padding=3,
-)
-extension_defaults = widget_defaults.copy()
-
-screens = [
-    Screen(
-        top=bar.Bar(
+##bars##
+topBar=bar.Bar(
             [
                 widget.Sep(
                     linewidth=0,
@@ -270,112 +275,127 @@ screens = [
                 #    },
                 #    name_transform=lambda name: name.upper(),
                 # ),
-                widget.Systray(),
+				widget.Systray(),
                 widget.Clock(
                     format="%A, %b %d %I:%M %p",
                     foreground=colors[3],
                 ),
 
             ],
-            24,
+            18,
+            background=colors[5],
+        )
+bottomBar=bar.Bar(
+    [
+        widget.Volume(
+            fmt="Vol: {}",
+			padding = 8,
+            background=colors[5],
+            foreground=colors[3],
+        ),
+        widget.TextBox(
+            '',
+			width=17,
+            fontsize=13,
+            padding=0,
+            foreground=colors[5],
+            background=colors[4],
+        ),
+        widget.Memory(
+            format="Ram: {MemPercent}%",
+            background=colors[4],
+            foreground=colors[3],
+        ),
+        widget.TextBox(
+            "",
+			width=17,
+            fontsize=13,
+            padding=0,
+            foreground=colors[4],
             background=colors[5],
         ),
+        widget.CPU(
+            format="Cpu: {load_percent}%",
+            background=colors[5],
+            foreground=colors[3],
+        ),
+        widget.TextBox(
+            "",
+			width=17,
+            fontsize=13,
+            padding=0,
+            foreground=colors[5],
+            background=colors[4],
+        ),
+        widget.Battery(
+            format="Battery: {percent:.0%}{char}",
+            background=colors[4],
+            foreground=colors[3],
+            charge_char="ﮣ",
+            discharge_char="-",
+            low_percentage=0.2,
+        ),
+        widget.TextBox(
+            "",
+			width=17,
+            fontsize=13,
+            padding=0,
+            foreground=colors[4],
+            background=colors[5],
+        ),
+        widget.DF(
+            format="Disk: {r:.0f}%",
+            foreground=colors[3],
+            background=colors[5],
+            visible_on_warn=False,
+        ),
+        widget.TextBox(
+            "",
+			width=17,
+            fontsize=13,
+            padding=0,
+            foreground=colors[5],
+            background=colors[4],
+        ),
+        widget.CapsNumLockIndicator(
+            fmt="{}",
+			background=colors[4],
+			foreground=colors[3]
+        ),
+        widget.TextBox(
+            "",
+			width=17,
+            fontsize=13,
+            padding=0,
+            foreground=colors[4],
+            background=colors[5],
+        ),
+		#widget.Notify(
+        #    background=colors[5],
+		#	foreground=colors[3],
+		#	#parse_text = parse,
+		#	fmt = {},
+		#),
+    ],
+    14,
+	background=colors[5],
+)
+##end bars##
+##gui settings##
+widget_defaults = dict(
+    font="FiraCode Nerd Font Bold",
+    fontsize=12,
+    padding=3,
+)
+extension_defaults = widget_defaults.copy()
+
+screens = [
+    Screen(
+        top=topBar,
+		bottom=bottomBar,
         wallpaper="~/.config/qtile/sbr.png",
         wallpaper_mode="fill",
-        bottom=bar.Bar(
-            [
-                widget.Volume(
-                    fmt="Vol: {}",
-                    background=colors[5],
-                    foreground=colors[3],
-                ),
-                widget.TextBox(
-                    '',
-					width=30,
-                    fontsize=22,
-                    padding=0,
-                    foreground=colors[5],
-                    background=colors[4],
-                ),
-                widget.Memory(
-                    format="Ram: {MemPercent}%",
-                    background=colors[4],
-                    foreground=colors[3],
-                ),
-                widget.TextBox(
-                    "",
-					width=30,
-                    fontsize=22,
-                    padding=0,
-                    foreground=colors[4],
-                    background=colors[5],
-                ),
-                widget.CPU(
-                    format="Cpu: {load_percent}%",
-                    background=colors[5],
-                    foreground=colors[3],
-                ),
-                widget.TextBox(
-                    "",
-					width=30,
-                    fontsize=22,
-                    padding=0,
-                    foreground=colors[5],
-                    background=colors[4],
-                ),
-                widget.Battery(
-                    format="Battery: {percent:.0%}{char}",
-                    background=colors[4],
-                    foreground=colors[3],
-                    charge_char="ﮣ",
-                    discharge_char="-",
-                    low_percentage=0.2,
-                ),
-                widget.TextBox(
-                    "",
-					width=30,
-                    fontsize=22,
-                    padding=0,
-                    foreground=colors[4],
-                    background=colors[5],
-                ),
-                widget.DF(
-                    format="Disk: {r:.0f}%",
-                    foreground=colors[3],
-                    background=colors[5],
-                    visible_on_warn=False,
-                ),
-                widget.TextBox(
-                    "",
-					width=30,
-                    fontsize=22,
-                    padding=0,
-                    foreground=colors[5],
-                    background=colors[4],
-                ),
-                widget.CapsNumLockIndicator(
-                    fmt="{}",
-					background=colors[4],
-					foreground=colors[3]
-                ),
-                widget.TextBox(
-                    "",
-					width=30,
-                    fontsize=22,
-                    padding=0,
-                    foreground=colors[4],
-                    background=colors[5],
-                ),
-                widget.Notify(
-                    background=colors[5],
-					foreground=colors[3],
-					#parse_text = parse,
-					fmt = {},
-				),
-            ],
-            24,
-			background=colors[5],
-        ),
+        
     ),
 
   Screen(
@@ -390,6 +410,9 @@ screens = [
   ),
 ]
 
+
+
+##floating layout settings##
 # Drag floating layouts.
 mouse = [
     Drag(
@@ -423,6 +446,14 @@ floating_layout = layout.Floating(
         Match(title="pinentry"),  # GPG key password entry
     ]
 )
+##end floating layout settings##
+##end gui settings##
+
+
+
+
+
+
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True
