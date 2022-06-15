@@ -49,6 +49,7 @@ def parse(text):
 @hook.subscribe.startup_once
 def autostart():
     sp.Popen(["blueman-applet"])
+    sp.Popen(["compton"])
 
 ##end functions##
 
