@@ -298,7 +298,7 @@ bottomBar=bar.Bar(
             '',
 			width=17,
             fontsize=13,
-            padding=0,
+            padding=-2,
             foreground=colors[5],
             background=colors[4],
         ),
@@ -311,7 +311,7 @@ bottomBar=bar.Bar(
             "",
 			width=17,
             fontsize=13,
-            padding=0,
+            padding=-2,
             foreground=colors[4],
             background=colors[5],
         ),
@@ -324,7 +324,7 @@ bottomBar=bar.Bar(
             "",
 			width=17,
             fontsize=13,
-            padding=0,
+            padding=-2,
             foreground=colors[5],
             background=colors[4],
         ),
@@ -340,7 +340,7 @@ bottomBar=bar.Bar(
             "",
 			width=17,
             fontsize=13,
-            padding=0,
+            padding=-2,
             foreground=colors[4],
             background=colors[5],
         ),
@@ -354,7 +354,7 @@ bottomBar=bar.Bar(
             "",
 			width=17,
             fontsize=13,
-            padding=0,
+            padding=-2,
             foreground=colors[5],
             background=colors[4],
         ),
@@ -367,7 +367,7 @@ bottomBar=bar.Bar(
             "",
 			width=17,
             fontsize=13,
-            padding=0,
+            padding=-2,
             foreground=colors[4],
             background=colors[5],
         ),
@@ -391,7 +391,7 @@ widget_defaults = dict(
 extension_defaults = widget_defaults.copy()
 
 screens = [
-    Screen(
+  Screen(
         top=topBar,
 		bottom=bottomBar,
         wallpaper="~/.config/qtile/sbr.png",
@@ -399,16 +399,12 @@ screens = [
         
     ),
 
-  Screen(
-  	top=bar.Bar(
-  	    [
-  	        widget.GroupBox(),
-  	        widget.WindowName(),
-  	        widget.Clock()
-  	    ],
-  	    30,
-  	),
-  ),
+  #Screen(
+  #      top=topBar,
+  #  	bottom=bottomBar,
+  #      wallpaper="~/.config/qtile/sbr.png",
+  #      wallpaper_mode="fill",
+  #  ),
 ]
 
 
