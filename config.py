@@ -48,6 +48,7 @@ def parse(text):
 	return text.replace("\n",":")	
 @hook.subscribe.startup_once
 def autostart():
+    sp.Popen(["notify-osd"])
     sp.Popen(["blueman-applet"])
     sp.Popen(["compton"])
 
